@@ -1,0 +1,29 @@
+version: "3"
+
+services:
+  traefik:
+    image: traefik:v2.3
+    container_name: "traefik"
+    restart: always
+    command:
+      - --entrypoints.web.address=:80
+      - --entrypoints.web-secure.address=:443
+      - --providers.docker=true
+      - --api.insecure=true
+      - --api.dashboard=true
+      - --certificatesresolvers.le.acme.email=huy.vuquang@stdio.vn
+      - --certificatesresolvers.le.acme.storage=/acme.json
+      - --certificatesresolvers.le.acme.tlschallenge=true
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "./traefik.toml:/root/traefik/traefik.toml"
+    networks:
+      - web
+
+networks:
+  web:
+    external: true
